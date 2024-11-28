@@ -1,4 +1,5 @@
 const pool = require('../config/database');
+const jwt = require('jsonwebtoken');
 
 const getAllCour = async (req, res) => {
   try {

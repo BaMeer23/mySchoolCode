@@ -1,4 +1,5 @@
 const pool = require('../config/database');
+const jwt = require('jsonwebtoken');
 
 const getAllDe = async (req, res) => {
   try {

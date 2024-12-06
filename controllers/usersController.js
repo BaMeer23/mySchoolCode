@@ -6,7 +6,6 @@ const getAllUsers = async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT user_id, fullname, username, created_at, updated_at FROM users');
     res.json(rows);
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -19,7 +18,7 @@ const getUserById = async (req, res) => {
     const [rows] = await pool.query('SELECT user_id, fullname, username, created_at, updated_at FROM users WHERE user_id = ?', [user_id]);
 
     if (rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' }); 
+      return res.status(404).json({ error: 'User not found' });
     }
 
     res.json(rows[0]);
@@ -29,49 +28,70 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-    const { fullname, username, passwordx } = req.body;
-  
-    try {
-      const hashedPassword = await bcrypt.hash(passwordx, 10);
-      const [result] = await pool.query('INSERT INTO users (fullname, username, passwordx) VALUES (?, ?, ?)', [fullname, username, hashedPassword]);
-      res.status(201).json({ id: result.insertId, fullname, username, passwordx });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  };
-  
-  const updateUser = async (req, res) => {
-    const { user_id } = req.params;
-    const { fullname, username, passwordx } = req.body;
+  const { fullname, username, passwordx } = req.body;
 
-    try {
-      const hashedPassword = await bcrypt.hash(passwordx, 10);
-      const [result] = await pool.query('UPDATE users SET fullname = ?, username = ?, passwordx = ? WHERE user_id = ?', [fullname, username, hashedPassword, user_id]);
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      res.json({ message: 'User updated successfully' });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  };
+  try {
+    const hashedPassword = await bcrypt.hash(passwordx, 10);
+    const [result] = await pool.query('INSERT INTO users (fullname, username, passwordx) VALUES (?, ?, ?)', [fullname, username, hashedPassword]);
+    res.status(201).json({ id: result.insertId, fullname, username });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-  const deleteUser = async (req, res) => {
-    const { user_id } = req.params;
+const updateUser = async (req, res) => {
+  const { user_id } = req.params;
+  const { fullname, username, passwordx } = req.body;
 
-    try {
-      const [result] = await pool.query('DELETE FROM users WHERE user_id = ?', [user_id]);
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      res.json({ message: 'User delete successfully' });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+  try {
+    const hashedPassword = await bcrypt.hash(passwordx, 10);
+    const [result] = await pool.query('UPDATE users SET fullname = ?, username = ?, passwordx = ? WHERE user_id = ?', [fullname, username, hashedPassword, user_id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
     }
-  };
-  
-  module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser };
+
+    res.json({ message: 'User updated successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+    const [result] = await pool.query('DELETE FROM users WHERE user_id = ?', [user_id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  const { username, passwordx } = req.body;
+  const { user_id } = req.user; // Extracted from token via middleware
+
+  try {
+    const hashedPassword = await bcrypt.hash(passwordx, 10);
+    const [result] = await pool.query(
+      'UPDATE users SET username = ?, passwordx = ? WHERE user_id = ?',
+      [username, hashedPassword, user_id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'Profile updated successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser, updateProfile };

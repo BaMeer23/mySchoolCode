@@ -73,25 +73,5 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const updateProfile = async (req, res) => {
-  const { username, passwordx } = req.body;
-  const { user_id } = req.user; // Extracted from token via middleware
 
-  try {
-    const hashedPassword = await bcrypt.hash(passwordx, 10);
-    const [result] = await pool.query(
-      'UPDATE users SET username = ?, passwordx = ? WHERE user_id = ?',
-      [username, hashedPassword, user_id]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.json({ message: 'Profile updated successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser, updateProfile };
+module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser };

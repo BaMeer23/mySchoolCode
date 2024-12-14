@@ -14,7 +14,7 @@ const authenticateToken = (req, res, next) => {
         next();
     }
     catch(err){
-        res.statues(400).json({error: 'Token is Invalid'})
+        res.status(400).json({error: 'Token is Invalid'})
     }
 };
 

@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 // CORS middleware configuration
 app.use(cors({
-  origin: 'https://cfrontend-rj10.vercel.app/', // Allow only this frontend URL
+  origin: 'https://cfrontend-rj10.vercel.app', // Allow only this frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow certain headers
   credentials: true, // Allow cookies and Authorization headers

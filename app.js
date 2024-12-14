@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const authRoute = require('./routes/authRoute');
@@ -11,11 +10,11 @@ const studentsRoute = require('./routes/studentsRoute');
 const app = express();
 
 // Body Parser middleware to parse JSON request bodies
-app.use(bodyParser.json());
+app.use(express.json()); // Use express.json() instead of body-parser
 
 // CORS middleware configuration
 app.use(cors({
-  origin: 'https://cfrontend-rj10.vercel.app', // Allow only this frontend URL
+  origin: 'https://cfrontend-rj10.vercel.app', // Allow only this frontend URL, http://localhost:5175, 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow certain headers
   credentials: true, // Allow cookies and Authorization headers
@@ -42,5 +41,3 @@ const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
-//npm start

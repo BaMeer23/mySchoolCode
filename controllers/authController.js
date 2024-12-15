@@ -16,7 +16,7 @@ const register = async (req, res) => {
     }
 };
 
-// Login user and return JWT tokens
+// Login user and return JWT token
 const login = async (req, res) => {
     const { username, passwordx } = req.body;
 
@@ -34,19 +34,10 @@ const login = async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Invalid credentials' });
         }
 
-        // Access token expiration (4 hours)
-        const accessExpiresIn = process.env.JWT_ACCESS_EXPIRATION_TIME || '4h';
-        const accessToken = jwt.sign({ user_id: user.user_id, username: user.username }, process.env.JWT_SECRET, { expiresIn: accessExpiresIn });
+        const expiresIn = process.env.JWT_ACCESS_EXPIRATION_TIME || '4hr';
+        const token = jwt.sign({ user_id: user.user_id, username: user.username }, process.env.JWT_SECRET, { expiresIn });
 
-        // Refresh token expiration (12 hours)
-        const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRATION_TIME || '12h';
-        const refreshToken = jwt.sign({ user_id: user.user_id, username: user.username }, process.env.JWT_REFRESH_SECRET, { expiresIn: refreshExpiresIn });
-
-        res.json({
-            status: 'success',
-            access_token: accessToken,
-            refresh_token: refreshToken
-        });
+        res.json({ status: 'success', token });
     } catch (err) {
         res.status(500).json({ status: 'error', message: err.message });
     }

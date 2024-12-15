@@ -14,10 +14,14 @@ app.use(express.json());
 
 // CORS middleware configuration
 app.use(cors({
-  origin: ['https://cfrontend-rj10.vercel.app', 'http://localhost:5175'], // Multiple origins for testing
+  origin: [
+    'https://cfrontend-rj10.vercel.app',    // Local development URL
+    'http://localhost:5175',                  // Another local URL (for testing)
+    'https://vercel-production-url.vercel.app' // Vercel production URL
+  ], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  credentials: true,  // Allow credentials (cookies, auth headers)
 }));
 
 // Simple routes for testing

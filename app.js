@@ -10,23 +10,23 @@ const studentsRoute = require('./routes/studentsRoute');
 const app = express();
 
 // Body Parser middleware to parse JSON request bodies
-app.use(express.json()); // Use express.json() instead of body-parser
+app.use(express.json());
 
 // CORS middleware configuration
 app.use(cors({
-  origin: 'https://cfrontend-rj10.vercel.app', // Allow only this frontend URL, http://localhost:5175, 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow certain headers
-  credentials: true, // Allow cookies and Authorization headers
+  origin: ['https://cfrontend-rj10.vercel.app', 'http://localhost:5175'], // Multiple origins for testing
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
 
 // Simple routes for testing
-app.get('/', function(req, res) {
-    res.send("Peace");
+app.get('/', (req, res) => {
+  res.send("Peace");
 });
 
-app.get('/rj', function(req, res) {
-    res.send("loko-loko");
+app.get('/rj', (req, res) => {
+  res.send("loko-loko");
 });
 
 // Use the routes for various APIs
@@ -36,8 +36,14 @@ app.use('/api/dept', departmentsRoute);
 app.use('/api/cour', coursesRoute);
 app.use('/api/st', studentsRoute);
 
-// Set the server to listen on port 5000
-const PORT = 5000;
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ error: 'Something went wrong!' });
+});
+
+// Set the server to listen on port
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

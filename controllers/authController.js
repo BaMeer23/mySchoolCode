@@ -16,7 +16,7 @@ const register = async (req, res) => {
     }
 };
 
-// Login user and return JWT token
+// Login user and return JWT access and refresh tokens
 const login = async (req, res) => {
     const { username, passwordx } = req.body;
 
@@ -34,10 +34,29 @@ const login = async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Invalid credentials' });
         }
 
-        const expiresIn = process.env.JWT_ACCESS_EXPIRATION_TIME || '4hr';
-        const token = jwt.sign({ user_id: user.user_id, username: user.username }, process.env.JWT_SECRET, { expiresIn });
+        // Generate access token with expiration time from environment variable (default 4 hours)
+        const accessTokenExpiresIn = process.env.JWT_ACCESS_EXPIRATION_TIME || '4h';
+        const accessToken = jwt.sign(
+            { user_id: user.user_id, username: user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: accessTokenExpiresIn }
+        );
 
-        res.json({ status: 'success', token });
+        // Generate refresh token with expiration time from environment variable (default 12 hours)
+        const refreshTokenExpiresIn = process.env.JWT_REFRESH_EXPIRATION_TIME || '12h';
+        const refreshToken = jwt.sign(
+            { user_id: user.user_id, username: user.username },
+            process.env.JWT_REFRESH_SECRET,
+            { expiresIn: refreshTokenExpiresIn }
+        );
+
+        // Optionally, store the refresh token in the database or HTTP-only cookies for security
+
+        res.json({
+            status: 'success',
+            accessToken,
+            refreshToken
+        });
     } catch (err) {
         res.status(500).json({ status: 'error', message: err.message });
     }

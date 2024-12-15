@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors({
   origin: [
     'https://cfrontend-rj10.vercel.app',    // Local development URL
-    'http://localhost:5174',                  // Another local URL (for testing)
+    'http://localhost:5175',                  // Another local URL (for testing)
     'https://vercel-production-url.vercel.app' // Vercel production URL
   ], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
